@@ -269,12 +269,11 @@ class DownloadManager
 
                 return;
             } catch (\RuntimeException $e) {
-                if (!$this->io->isInteractive()) {
+                if ($this->io->isInteractive()) {
+                  $this->io->writeError('<error>    Update failed (' . $e->getMessage() . ')</error>');
+                  if (!$this->io->askConfirmation('    Would you like to try reinstalling the package instead [<comment>yes</comment>]? ', true)) {
                     throw $e;
-                }
-                $this->io->writeError('<error>    Update failed ('.$e->getMessage().')</error>');
-                if (!$this->io->askConfirmation('    Would you like to try reinstalling the package instead [<comment>yes</comment>]? ', true)) {
-                    throw $e;
+                  }
                 }
             }
         }
